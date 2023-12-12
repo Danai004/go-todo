@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket TODO App</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      header {
+        background-color: #007bff;
+        color: white;
+        padding: 1rem;
+        text-align: center;
+      }
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+      }
+      #todo-container {
+        width: 400px;
+        padding: 2rem;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #007bff;
+      }
+      p {
+        font-size: 18px;
+      }
+      #input {
+        font-size: 16px;
+      }
+      button {
+        font-size: 16px;
+      }
+      pre {
+        font-size: 16px;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #f9f9f9;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>WebSocket TODO Example</h1>
+    </header>
+    <main>
+      <div id="todo-container">
+        <p class="mb-3">Available commands for todo app:</p>
+        <p class="mb-3">- add [task]</p>
+        <p class="mb-3">- done [task]</p>
+        <input
+          id="input"
+          type="text"
+          class="form-control mb-3"
+          placeholder="Enter task"
+        />
+        <button onclick="send()" class="btn btn-primary btn-block">Send</button>
+        <pre id="output" class="mt-3"></pre>
+      </div>
+    </main>
+    <!-- Bootstrap JS and dependencies (popper.js and jQuery) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      var input = document.getElementById("input");
+      var output = document.getElementById("output");
+      var socket = new WebSocket("ws://localhost:81/todo");
+
+      socket.onopen = function () {
+        output.innerHTML += "Status: Connected\n";
+      };
+
+      socket.onmessage = function (e) {
+        output.innerHTML += "\nServer: " + e.data + "\n";
+      };
+
+      function send() {
+        socket.send(input.value);
+        input.value = "";
+      }
+    </script>
+  </body>
+</html>
